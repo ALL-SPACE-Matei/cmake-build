@@ -109,8 +109,7 @@ RUN apt-get update && \
     zstd
 
 # Set gcc version
-RUN \
-    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${GCC_VERSION} 50 && \
+RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${GCC_VERSION} 50 && \
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_VERSION} 50 && \
     update-alternatives --install /usr/bin/cpp cpp-bin /usr/bin/cpp-${GCC_VERSION} 50 && \
     update-alternatives --set g++ /usr/bin/g++-${GCC_VERSION} && \
