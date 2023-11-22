@@ -13,6 +13,7 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
+    container: noenv/buildah
     permissions:
       contents: read
       packages: write
@@ -26,6 +27,8 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASS }}
+
+      - run: buildah --version
 
       - name: Build
         id: build-image
