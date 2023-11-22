@@ -41,7 +41,7 @@ jobs:
       - name: Install up-to-date-buildah
         run: >-
            sudo apt-get -y -qq update &&
-           sudo apt-get -y install --no-recommends bats btrfs-progs git go-md2man libapparmor-dev libglib2.0-dev libgpgme11-dev libseccomp-dev libselinux1-dev make skopeo &&
+           sudo apt-get -y install --no-install-recommends --no-upgrade bats btrfs-progs git go-md2man libapparmor-dev libglib2.0-dev libgpgme11-dev libseccomp-dev libselinux1-dev make skopeo &&
            git clone https://github.com/containers/buildah &&
            cd buildah &&
            make runc all SECURITYTAGS="apparmor seccomp" &&
