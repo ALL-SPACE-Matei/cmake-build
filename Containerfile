@@ -18,10 +18,13 @@ ARG ARM_OPENSSL_SOURCE=https://github.com/ALL-SPACE-Matei/cmake-build/releases/d
 ARG ARM_OPENSSL_SHA256=86841853b62ceaac4e3124ed1a2dbbc78e783d7ae6e4738ceddc20b007528fc1
 ARG ARM_OPENSSL_DESTINATION=${ARM_A53_GNUTOOLS_DESTINATION}
 
+# General configuration
+ARG UBUNTU_VERSION=20.04
 ARG CLANG_VERSION=10
 ARG GCC_VERSION=9
 ARG NODE_MAJOR=18
 
+# Use a 'downloads' stage to avoid having the original archives in the final image
 FROM scratch AS downloads
 
 ARG ARM_R5_GNUTOOLS_SOURCE
@@ -33,13 +36,12 @@ ARG ARM_A53_GNUTOOLS_SHA256
 ARG NXP_GNUTOOLS_SHA256
 ARG ARM_OPENSSL_SHA256
 
-
 ADD --checksum=sha256:${ARM_R5_GNUTOOLS_SHA256}  ${ARM_R5_GNUTOOLS_SOURCE}  /
 ADD --checksum=sha256:${ARM_A53_GNUTOOLS_SHA256} ${ARM_A53_GNUTOOLS_SOURCE} /
 ADD --checksum=sha256:${NXP_GNUTOOLS_SHA256}     ${NXP_GNUTOOLS_SOURCE}     /
 ADD --checksum=sha256:${ARM_OPENSSL_SHA256}      ${ARM_OPENSSL_SOURCE}      /
 
-FROM ubuntu:20.04
+FROM ubuntu:${UBUNTU_VERSION}
 
 ARG CLANG_VERSION
 ARG GCC_VERSION
@@ -57,27 +59,32 @@ ARG NXP_GNUTOOLS_DESTINATION
 ARG ARM_OPENSSL_FILENAME
 ARG ARM_OPENSSL_DESTINATION
 
+LABEL org.opencontainers.image.title="ALL-SPACE C++/node development"
 LABEL org.opencontainers.image.source=https://github.com/ALL-SPACE-Matei/cmake-build
-LABEL org.opencontainers.image.description="C++ build container based on cmake, clang-${CLANG_VERSION}, gcc-${GCC_VERSION}, ARM toolchains and node-${NODE_MAJOR}"
+LABEL org.opencontainers.image.description="C++/node build container based ubuntu-${UBUNTU_VERSION}, cmake, clang-${CLANG_VERSION}, gcc-${GCC_VERSION}, ARM toolchains and node-${NODE_MAJOR}"
 
 ENV TZ=UTC
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Add ARM toolchains
-RUN --mount=type=bind,from=downloads,source=/${ARM_R5_GNUTOOLS_FILENAME},target=/${ARM_R5_GNUTOOLS_FILENAME} \
-    mkdir -p ${ARM_R5_GNUTOOLS_DESTINATION}  && tar -xf ${ARM_R5_GNUTOOLS_FILENAME}  -C ${ARM_R5_GNUTOOLS_DESTINATION}
-RUN --mount=type=bind,from=downloads,source=/${ARM_A53_GNUTOOLS_FILENAME},target=/${ARM_A53_GNUTOOLS_FILENAME} \
-    mkdir -p ${ARM_A53_GNUTOOLS_DESTINATION} && tar -xf ${ARM_A53_GNUTOOLS_FILENAME} -C ${ARM_A53_GNUTOOLS_DESTINATION}
-RUN --mount=type=bind,from=downloads,source=/${NXP_GNUTOOLS_FILENAME},target=/${NXP_GNUTOOLS_FILENAME} \
-    mkdir -p ${NXP_GNUTOOLS_DESTINATION}     && tar -xf ${NXP_GNUTOOLS_FILENAME}     -C ${NXP_GNUTOOLS_DESTINATION}
-RUN --mount=type=bind,from=downloads,source=/${ARM_OPENSSL_FILENAME},target=/${ARM_OPENSSL_FILENAME} \
-    mkdir -p ${ARM_OPENSSL_DESTINATION}      && tar -xf ${ARM_OPENSSL_FILENAME}      -C ${ARM_OPENSSL_DESTINATION}
+# Bind mounts are to avoid copying the archives in the final image
+RUN --mount=from=downloads,target=/downloads \
+    mkdir -p ${ARM_R5_GNUTOOLS_DESTINATION} && \
+    tar -xf /downloads/${ARM_R5_GNUTOOLS_FILENAME} -C ${ARM_R5_GNUTOOLS_DESTINATION} && \
+    mkdir -p ${ARM_A53_GNUTOOLS_DESTINATION} && \
+    tar -xf /downloads/${ARM_A53_GNUTOOLS_FILENAME} -C ${ARM_A53_GNUTOOLS_DESTINATION} && \
+    mkdir -p ${NXP_GNUTOOLS_DESTINATION} && \
+    tar -xf /downloads/${NXP_GNUTOOLS_FILENAME} -C ${NXP_GNUTOOLS_DESTINATION} && \
+    mkdir -p ${ARM_OPENSSL_DESTINATION} && \
+    tar -xf /downloads/${ARM_OPENSSL_FILENAME} -C ${ARM_OPENSSL_DESTINATION}
 
 # Install system dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends tzdata && \
     apt-get install -y --no-install-recommends \
     build-essential \
+    ca-certificates \
+    curl \
     clang-${CLANG_VERSION} \
     clang-tools-${CLANG_VERSION} \
     clangd-${CLANG_VERSION} \
@@ -90,6 +97,7 @@ RUN apt-get update && \
     gcovr \
     gdb \
     git \
+    gnupg \
     libssl-dev \
     libunwind-dev \
     libncurses-dev \
@@ -107,11 +115,6 @@ RUN \
     update-alternatives --set g++ /usr/bin/g++-${GCC_VERSION} && \
     update-alternatives --set gcc /usr/bin/gcc-${GCC_VERSION} && \
     update-alternatives --set cpp-bin /usr/bin/cpp-${GCC_VERSION}
-
-# Install requirements
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    ca-certificates curl gnupg
 
 # Download and import the Nodesource GPG key
 RUN mkdir -p /etc/apt/keyrings && \
