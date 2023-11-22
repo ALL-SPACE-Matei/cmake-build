@@ -24,7 +24,8 @@ ARG CLANG_VERSION=10
 ARG GCC_VERSION=9
 ARG NODE_MAJOR=18
 
-# Use a 'downloads' stage to avoid having the original archives in the final image
+# Use a 'downloads' stage to avoid having the original archives in the final image,
+# and since 'ADD' doesn't also unpack the archives
 FROM scratch AS downloads
 
 ARG ARM_R5_GNUTOOLS_SOURCE
