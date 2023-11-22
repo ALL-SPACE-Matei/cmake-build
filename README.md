@@ -1,4 +1,4 @@
-[![Container image](https://github.com/ALL-SPACE-Matei/build-container/actions/workflows/container-build-and-publish.yml/badge.svg?branch=main)](https://github.com/ALL-SPACE-Matei/build-container/actions/workflows/container-build-and-publish.yml)
+[![Container image](https://github.com/ALL-SPACE-Matei/cmake-build/actions/workflows/container-build-and-publish.yml/badge.svg?branch=main)](https://github.com/ALL-SPACE-Matei/cmake-build/actions/workflows/container-build-and-publish.yml)
 
 ## Description
 
@@ -13,7 +13,7 @@ This is a build environment container based on Ubuntu and composed of:
 
 The latest version ca be pulled via:
 
-`docker pull ghcr.io/all-space-matei/build-container:<TAG>`
+`docker pull ghcr.io/all-space-matei/cmake-build:<TAG>`
 
 where `<TAG>` can be one of:
 

@@ -9,12 +9,12 @@ ARG ARM_A53_GNUTOOLS_SHA256=5adc2ee03904571c2de79d5cfc0f7fe2a5c5f54f44da5b645c17
 ARG ARM_A53_GNUTOOLS_DESTINATION=/usr/local/tools/ARM/a53
 
 ARG NXP_GNUTOOLS_FILENAME=NXP_GNUTools_9.3.1.tar.bz2
-ARG NXP_GNUTOOLS_SOURCE=https://github.com/ALL-SPACE-Matei/build-container/releases/download/archives/${NXP_GNUTOOLS_FILENAME}
+ARG NXP_GNUTOOLS_SOURCE=https://github.com/ALL-SPACE-Matei/cmake-build/releases/download/archives/${NXP_GNUTOOLS_FILENAME}
 ARG NXP_GNUTOOLS_SHA256=2cb2de1c50a153aa331dd129e427afcd60b7defa3353a07e896e5e59ee575147
 ARG NXP_GNUTOOLS_DESTINATION=/usr/local/tools/NXP
 
 ARG ARM_OPENSSL_FILENAME=openssl-1.1.1o.tar.bz2
-ARG ARM_OPENSSL_SOURCE=https://github.com/ALL-SPACE-Matei/build-container/releases/download/archives/${ARM_OPENSSL_FILENAME}
+ARG ARM_OPENSSL_SOURCE=https://github.com/ALL-SPACE-Matei/cmake-build/releases/download/archives/${ARM_OPENSSL_FILENAME}
 ARG ARM_OPENSSL_SHA256=86841853b62ceaac4e3124ed1a2dbbc78e783d7ae6e4738ceddc20b007528fc1
 ARG ARM_OPENSSL_DESTINATION=${ARM_A53_GNUTOOLS_DESTINATION}
 
