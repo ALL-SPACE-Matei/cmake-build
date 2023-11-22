@@ -17,19 +17,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Log in
-        uses: redhat-actions/podman-login@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ env.REGISTRY_USER }}
-          password: ${{ env.REGISTRY_PASS }}
-
-      - run: buildah --version
-
-      - name: Update Go
+      - name: Update Go (needed for buildah)
         run: >-
             curl -fsSLO 'https://go.dev/dl/go1.21.4.linux-amd64.tar.gz' &&
             sudo rm -rf /usr/local/go &&
@@ -37,8 +25,7 @@ jobs:
             export PATH=$PATH:/usr/local/go/bin &&
             go version
 
-
-      - name: Install up-to-date-buildah
+      - name: Update buildah
         run: >-
            sudo apt-get -y -qq update &&
            sudo apt-get -y install --no-install-recommends --no-upgrade bats btrfs-progs git go-md2man libapparmor-dev libglib2.0-dev libgpgme11-dev libseccomp-dev libselinux1-dev make skopeo &&
@@ -47,7 +34,15 @@ jobs:
            make runc all SECURITYTAGS="apparmor seccomp" &&
            sudo make install install.runc
 
-      - run: buildah --version
+      - name: Log in
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASS }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Build
         id: build-image
