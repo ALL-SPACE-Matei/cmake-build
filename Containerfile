@@ -29,21 +29,10 @@ ARG ARM_A53_GNUTOOLS_SOURCE
 ARG NXP_GNUTOOLS_SOURCE
 ARG ARM_OPENSSL_SOURCE
 
-# Checksum support is present in buildah since commit cb30712, tag v1.33.0
-# Uncomment when the version of buildah in use is updated
-# ARG ARM_R5_GNUTOOLS_SHA256
-# ARG ARM_A53_GNUTOOLS_SHA256
-# ARG NXP_GNUTOOLS_SHA256
-# ARG ARM_OPENSSL_SHA256
-# ADD --checksum=sha256=${ARM_R5_GNUTOOLS_SHA256}  ${ARM_R5_GNUTOOLS_SOURCE}  /
-# ADD --checksum=sha256=${ARM_A53_GNUTOOLS_SHA256} ${ARM_A53_GNUTOOLS_SOURCE} /
-# ADD --checksum=sha256=${NXP_GNUTOOLS_SHA256}     ${NXP_GNUTOOLS_SOURCE}     /
-# ADD --checksum=sha256=${ARM_OPENSSL_SHA256}      ${ARM_OPENSSL_SOURCE}      /
-
-ADD ${ARM_R5_GNUTOOLS_SOURCE}  /
-ADD ${ARM_A53_GNUTOOLS_SOURCE} /
-ADD ${NXP_GNUTOOLS_SOURCE}     /
-ADD ${ARM_OPENSSL_SOURCE}      /
+ADD --checksum=sha256=${ARM_R5_GNUTOOLS_SHA256}  ${ARM_R5_GNUTOOLS_SOURCE}  /
+ADD --checksum=sha256=${ARM_A53_GNUTOOLS_SHA256} ${ARM_A53_GNUTOOLS_SOURCE} /
+ADD --checksum=sha256=${NXP_GNUTOOLS_SHA256}     ${NXP_GNUTOOLS_SOURCE}     /
+ADD --checksum=sha256=${ARM_OPENSSL_SHA256}      ${ARM_OPENSSL_SOURCE}      /
 
 FROM ubuntu:20.04
 
@@ -63,7 +52,8 @@ ARG NXP_GNUTOOLS_DESTINATION
 ARG ARM_OPENSSL_FILENAME
 ARG ARM_OPENSSL_DESTINATION
 
-LABEL org.opencontainers.image.description "C++ build container based on cmake, clang-${CLANG_VERSION}, gcc-${GCC_VERSION}, ARM toolchains and node-${NODE_MAJOR}"
+LABEL org.opencontainers.image.source=https://github.com/ALL-SPACE-Matei/cmake-build
+LABEL org.opencontainers.image.description="C++ build container based on cmake, clang-${CLANG_VERSION}, gcc-${GCC_VERSION}, ARM toolchains and node-${NODE_MAJOR}"
 
 ENV TZ=UTC
 ENV DEBIAN_FRONTEND=noninteractive
