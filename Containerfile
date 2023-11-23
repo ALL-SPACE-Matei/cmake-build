@@ -13,10 +13,10 @@ ARG NXP_GNUTOOLS_SOURCE=https://github.com/ALL-SPACE-Matei/cmake-build/releases/
 ARG NXP_GNUTOOLS_SHA256=2cb2de1c50a153aa331dd129e427afcd60b7defa3353a07e896e5e59ee575147
 ARG NXP_GNUTOOLS_DESTINATION=/usr/local/tools/NXP
 
-ARG ARM_OPENSSL_FILENAME=openssl-1.1.1o.tar.bz2
-ARG ARM_OPENSSL_SOURCE=https://github.com/ALL-SPACE-Matei/cmake-build/releases/download/archives/${ARM_OPENSSL_FILENAME}
-ARG ARM_OPENSSL_SHA256=86841853b62ceaac4e3124ed1a2dbbc78e783d7ae6e4738ceddc20b007528fc1
-ARG ARM_OPENSSL_DESTINATION=/usr/local/lib/ARM/a53
+ARG ARM_OPENSSL_FILENAME=openssl.tar.xz
+ARG ARM_OPENSSL_SOURCE=https://github.com/ALL-SPACE-Matei/openssl-a53/releases/download/latest/${ARM_OPENSSL_FILENAME}
+ARG ARM_OPENSSL_SHA256=6d9f0fbf0e6b3fa748f459800f32f6ed4608ea421701f87d81fbf6f0f7b6954d
+ARG ARM_OPENSSL_DESTINATION=/usr/local/lib/ARM/a53/openssl
 
 # General configuration
 ARG UBUNTU_VERSION=20.04
