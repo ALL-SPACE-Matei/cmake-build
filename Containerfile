@@ -3,9 +3,9 @@ ARG ARM_R5_GNUTOOLS_SOURCE=https://developer.arm.com/-/media/Files/downloads/gnu
 ARG ARM_R5_GNUTOOLS_SHA256=bcd840f839d5bf49279638e9f67890b2ef3a7c9c7a9b25271e83ec4ff41d177a
 ARG ARM_R5_GNUTOOLS_DESTINATION=/usr/local/tools/ARM/r5
 
-ARG ARM_A53_GNUTOOLS_FILENAME=gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2
-ARG ARM_A53_GNUTOOLS_SOURCE=https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/${ARM_A53_GNUTOOLS_FILENAME}
-ARG ARM_A53_GNUTOOLS_SHA256=5adc2ee03904571c2de79d5cfc0f7fe2a5c5f54f44da5b645c17ee57b217f11f
+ARG ARM_A53_GNUTOOLS_FILENAME=gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu.tar.xz
+ARG ARM_A53_GNUTOOLS_SOURCE=https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/${ARM_A53_GNUTOOLS_FILENAME}
+ARG ARM_A53_GNUTOOLS_SHA256=8dfe681531f0bd04fb9c53cf3c0a3368c616aa85d48938eebe2b516376e06a66
 ARG ARM_A53_GNUTOOLS_DESTINATION=/usr/local/tools/ARM/a53
 
 ARG NXP_GNUTOOLS_FILENAME=NXP_GNUTools_9.3.1.tar.bz2
@@ -67,19 +67,7 @@ LABEL org.opencontainers.image.description="C++/node build container based ubunt
 ENV TZ=UTC
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Add ARM toolchains
-# Bind mounts are to avoid copying the archives in the final image
-RUN --mount=from=downloads,target=/downloads \
-    mkdir -p ${ARM_R5_GNUTOOLS_DESTINATION} && \
-    tar -xf /downloads/${ARM_R5_GNUTOOLS_FILENAME} -C ${ARM_R5_GNUTOOLS_DESTINATION} && \
-    mkdir -p ${ARM_A53_GNUTOOLS_DESTINATION} && \
-    tar -xf /downloads/${ARM_A53_GNUTOOLS_FILENAME} -C ${ARM_A53_GNUTOOLS_DESTINATION} && \
-    mkdir -p ${NXP_GNUTOOLS_DESTINATION} && \
-    tar -xf /downloads/${NXP_GNUTOOLS_FILENAME} -C ${NXP_GNUTOOLS_DESTINATION} && \
-    mkdir -p ${ARM_OPENSSL_DESTINATION} && \
-    tar -xf /downloads/${ARM_OPENSSL_FILENAME} -C ${ARM_OPENSSL_DESTINATION}
-
-# Install system dependencies
+# Install system requirements
 RUN apt-get update && \
     apt-get install -y --no-install-recommends tzdata && \
     apt-get install -y --no-install-recommends \
@@ -106,6 +94,7 @@ RUN apt-get update && \
     python3 \
     srecord \
     vim \
+    xz \
     zstd
 
 # Set gcc version
@@ -115,6 +104,18 @@ RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${GCC_VERSION} 5
     update-alternatives --set g++ /usr/bin/g++-${GCC_VERSION} && \
     update-alternatives --set gcc /usr/bin/gcc-${GCC_VERSION} && \
     update-alternatives --set cpp-bin /usr/bin/cpp-${GCC_VERSION}
+
+# Add ARM toolchains
+# Bind mounts are to avoid copying the archives in the final image
+RUN --mount=from=downloads,target=/downloads \
+    mkdir -p ${ARM_R5_GNUTOOLS_DESTINATION} && \
+    tar -xf /downloads/${ARM_R5_GNUTOOLS_FILENAME} -C ${ARM_R5_GNUTOOLS_DESTINATION} && \
+    mkdir -p ${ARM_A53_GNUTOOLS_DESTINATION} && \
+    tar -xf /downloads/${ARM_A53_GNUTOOLS_FILENAME} -C ${ARM_A53_GNUTOOLS_DESTINATION} && \
+    mkdir -p ${NXP_GNUTOOLS_DESTINATION} && \
+    tar -xf /downloads/${NXP_GNUTOOLS_FILENAME} -C ${NXP_GNUTOOLS_DESTINATION} && \
+    mkdir -p ${ARM_OPENSSL_DESTINATION} && \
+    tar -xf /downloads/${ARM_OPENSSL_FILENAME} -C ${ARM_OPENSSL_DESTINATION}
 
 # Download and import the Nodesource GPG key
 RUN mkdir -p /etc/apt/keyrings && \
