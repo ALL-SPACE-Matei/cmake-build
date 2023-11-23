@@ -94,7 +94,7 @@ RUN apt-get update && \
     python3 \
     srecord \
     vim \
-    xz \
+    xz-utils \
     zstd
 
 # Set gcc version
